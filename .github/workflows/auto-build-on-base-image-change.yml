@@ -1,8 +1,8 @@
 name: Auto Image Rebuild 
 on:
-  - schedule: 
-      cron: "0 12 1 * *" 
-  - workflow_dispatch: 
+  schedule: 
+    cron: "0 12 1 * *" 
+  workflow_dispatch: 
 
 jobs: 
   build-latest: 
