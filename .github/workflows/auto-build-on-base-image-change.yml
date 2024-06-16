@@ -1,44 +1,43 @@
-name: Auto Image Rebuild 
+name: "Auto Image Rebuild"
 on:
-  schedule: 
-    cron: "0 12 1 * *" 
-  workflow_dispatch: 
+  schedule: 
+    - cron: "0 12 1 * *"
+  workflow_dispatch:
 
-jobs: 
-  build-latest: 
-    runs-on: ubuntu-latest 
-    steps: 
-      - uses: actions/checkout@v2 
+jobs:
+  build-latest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
 
-      - name: Login to DockerHub 
-        uses: docker/login-action@v1 
-        with: 
-          username: ${{ secrets.HUB_USER }} 
-          password: ${{ secrets.HUB_TOKEN }} 
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.HUB_USER }}
+          password: ${{ secrets.HUB_TOKEN }}
 
-      - name: Build and push Regular Docker Image 
-        uses: docker/build-push-action@v2.6.1 
-        with: 
-          context: "${{ github.workspace }}" 
-          push: true 
-          tags: ${{ secrets.HUB_NAMESPACE }}/{{ secrets.HUB_NAME }}:{{ secrets.HUB_TAG }}
+      - name: Build and push Regular Docker Image
+        uses: docker/build-push-action@v2.6.1
+        with:
+          context: ${{ github.workspace }}
+          push: true
+          tags: ${{ secrets.HUB_NAMESPACE }}/${{ secrets.HUB_NAME }}:${{ secrets.HUB_TAG }}
 
+  build-alpine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
 
-  build-alpine: 
-    runs-on: ubuntu-latest 
-    steps: 
-      - uses: actions/checkout@v2 
-
-      - name: Login to DockerHub 
-        uses: docker/login-action@v1 
-        with: 
-          username: ${{ secrets.HUB_USER }} 
-          password: ${{ secrets.HUB_TOKEN }} 
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.HUB_USER }}
+          password: ${{ secrets.HUB_TOKEN }}
 
       - name: Build and push Alpine Docker Image
         uses: docker/build-push-action@v2.6.1
         with:
-          context: "${{ github.workspace }}"
+          context: ${{ github.workspace }}
           push: true
-          tags: ${{ secrets.HUB_NAMESPACE }}/{{ secrets.HUB_NAME }}:{{ secrets.HUB_TAG_ALPINE }}
-          file: "Dockerfile.alpine"
+          tags: ${{ secrets.HUB_NAMESPACE }}/${{ secrets.HUB_NAME }}:${{ secrets.HUB_TAG_ALPINE }}
+          file: Dockerfile.alpine
