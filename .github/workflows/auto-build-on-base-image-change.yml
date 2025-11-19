@@ -41,3 +41,19 @@ jobs:
           push: true
           tags: ${{ secrets.HUB_NAMESPACE }}/${{ secrets.HUB_NAME }}:${{ secrets.HUB_TAG_ALPINE }}
           file: Dockerfile.alpine
+
+  keep-alive:
+        runs-on: ubuntu-latest
+        env:
+          GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN || github.token }}
+        steps:
+          - name: Enable current workflow
+            shell: sh
+            run: |
+              case "${GITHUB_WORKFLOW_REF:?}" in
+                "${GITHUB_REPOSITORY:?}"/.github/workflows/*.y*ml@*) ;;
+                *) false ;;
+              esac
+              workflow="${GITHUB_WORKFLOW_REF%%@*}"
+              workflow="${workflow#${GITHUB_REPOSITORY}/.github/workflows/}"
+              gh api -X PUT "repos/${GITHUB_REPOSITORY}/actions/workflows/${workflow}/enable"
